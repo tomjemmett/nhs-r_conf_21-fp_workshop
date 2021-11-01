@@ -24,3 +24,5 @@ render_report <- function(org_code) {
 }
 
 walk(org_codes, render_report)
+
+# you should now see the files in exercises/reports/
