@@ -1,0 +1,46 @@
+---
+title: "A&E Report"
+output: html_document
+params:
+  org_code: "all"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(NHSRdatasets)
+
+df <- ae_attendances
+
+org_code <- params$org_code
+if (org_code != "all") {
+  # use !! to use the org_code variable, not org_code column
+  df <- filter(df, org_code == !!org_code)
+  
+  if (nrow(df) == 0) {
+    stop(paste("found no rows for", org_code))
+  }
+}
+
+df <- df %>%
+  group_by(period) %>%
+  summarise_if(is.numeric, sum)
+```
+
+org_code = `r org_code`
+
+## Attendances
+```{r attendances plot}
+ggplot(df, aes(period, attendances)) +
+  geom_line() +
+  geom_point()
+```
+
+## Performance
+```{r performance plot}
+df %>%
+  mutate(performance = 1 - breaches / attendances) %>%
+  ggplot(aes(period, performance)) +
+  geom_line() +
+  geom_point()
+```

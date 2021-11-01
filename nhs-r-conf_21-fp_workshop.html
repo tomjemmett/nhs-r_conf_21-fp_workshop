@@ -6,7 +6,10 @@
     <meta name="author" content="[Tom Jemmett][email] | Senior Healthcare Analyst" />
     <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view-0.2.6/tile-view.js"></script>
     <link href="libs/animate.css-3.7.2/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/animate.css-xaringan-3.7.2/animate.slide_left.css" rel="stylesheet" />
     <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
     <script src="libs/panelset-0.2.6/panelset.js"></script>
     <link rel="stylesheet" href="css/nhsr.css" type="text/css" />
@@ -27,13 +30,28 @@ class: title-slide, left, bottom
 ### **[The Strategy Unit][su]** | Midlands and Lancashire CSU
 
 ---
+
+# Session Outline
+
+* What are functions?
+* Why do we want to write functions?
+* What is functional programming?
+* A run through of the `{purrr}` package
+  - `compose` and `partial`
+  - `map` and it's variants
+  - `reduce`
+  - `safely` and `possibly`
+  - `keep` and `discard`
+  - `some`/`every`/`none`
+* A brief introduction to Parallel Computation with `{furrr}`
+---
 class: middle, center
 
 # What are functions?
 
 ---
 
-# What are functions?
+## What are functions?
 
 .pull-left[
 
@@ -80,7 +98,7 @@ read_csv(filename)
 
 ---
 
-# Vectors in R
+## Vectors in R
 
 In R we have a number of different types of vectors:
 
@@ -104,7 +122,7 @@ column, then all the items in the second column etc.)
 
 ---
 
-# Environments
+## Environments
 
 .pull-left[
 In R, we have the global environment. This is where all variables are created when you assign (`&lt;-`) something in the
@@ -254,7 +272,7 @@ for (i in colnames(df)) {
 
 ---
 
-# Pure functions
+## Pure functions
 
 .pull-left[
 Pure functions are functions which:
@@ -705,7 +723,6 @@ once for each item in the input vector.
 ]
 
 ---
-class: animated slideInRight fadeOutLeft
 
 # `map_df` variants
 
@@ -949,14 +966,13 @@ ae_types$data[[1]]
 ]
 
 .pull-right[
-And we could build a function that will plot this data for us
+And we could build a function that will plot this data:
 
 
 ```r
 ae_plot &lt;- function(type, data) {
   ggplot(data, aes(period, attendances)) +
-    geom_line() +
-    geom_point() +
+    geom_line() + geom_point() +
     labs(title = paste("Type:", type))
 }
 ae_plot(ae_types$type[[1]], ae_types$data[[1]])
@@ -1349,6 +1365,80 @@ none(values, sum_gt_25)
 ]
 ]
 ]
+
+---
+
+# Parallel Computation
+
+The `{furrr}` package makes it easy to convert `map`'s to run in parallel. Almost all of the `map` functions are
+available, prefixed with `future_`.
+
+The first thing we need to do after loading the `{furrr}` package is set up the parallel workers. We do this with the
+`plan` function.
+
+.pull-left[
+
+```r
+library(furrr)
+```
+
+```
+## Loading required package: future
+```
+
+```r
+plan(multisession, workers = 10)
+# multicore on Linux/Mac
+
+fn &lt;- function(x) {
+  Sys.sleep(0.5)
+  x
+}
+```
+]
+
+.pull-right[
+
+```r
+tictoc::tic()
+x &lt;- map_dbl(1:10, fn)
+tictoc::toc()
+```
+
+```
+## 5.11 sec elapsed
+```
+
+```r
+tictoc::tic()
+y &lt;- future_map_dbl(1:10, fn)
+tictoc::toc()
+```
+
+```
+## 3.17 sec elapsed
+```
+]
+
+---
+
+# Further Reading / References
+
+* [R4DS: Functions][r4ds]
+* Advanced R
+  - [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
+  - [Functions](https://adv-r.hadley.nz/functions.html)
+  - [Environments](https://adv-r.hadley.nz/environments.html)
+  - [Functional Programming][adv-r] (3 chapters)
+* Mastering the javascript interview (while not R, the examples should be easy enough to follow)
+  - [What is a pure function?][mji_what_pure_fn]
+  - [What is functional Programming?][mji_what_fp]
+* [Learn you a Haskell](http://learnyouahaskell.com/) (a purely functional programming language)
+* Category Theory (the mathematics that underpins a lot of FP)
+  - [B. Milewski Lectures](https://www.youtube.com/watch?v=I8LbkfSSR58&amp;list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
+  - [Category Theory for Programmers](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
+  - [Category Theory Illustrated](https://boris-marinov.github.io/category-theory-illustrated/)
+* [Lambda Calculus lecture](https://www.youtube.com/watch?v=6BnVo7EHO_8) (FP is derived from lambda calculus)
 
 [//]: &lt;&gt; (URL's / References --------------------------------------------------)
 [email]:mailto:thomas.jemmett@nhs.net

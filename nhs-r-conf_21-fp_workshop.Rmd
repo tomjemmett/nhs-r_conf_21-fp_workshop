@@ -43,8 +43,9 @@ theme_set(su_theme())
 # scale_colour_continuous <- partial(scale_colour_su, discrete = FALSE)
 # scale_colour_discrete <- partial(scale_colour_su, discrete = TRUE)
 
+xaringanExtra::use_tile_view()
 xaringanExtra::use_animate_css()
-# xaringanExtra::use_animate_all("slide_left")
+xaringanExtra::use_animate_all("slide_left")
 xaringanExtra::use_panelset()
 
 set.seed(123)
@@ -59,13 +60,28 @@ class: title-slide, left, bottom
 ### `r rmarkdown::metadata$institute`
 
 ---
+
+# Session Outline
+
+* What are functions?
+* Why do we want to write functions?
+* What is functional programming?
+* A run through of the `{purrr}` package
+  - `compose` and `partial`
+  - `map` and it's variants
+  - `reduce`
+  - `safely` and `possibly`
+  - `keep` and `discard`
+  - `some`/`every`/`none`
+* A brief introduction to Parallel Computation with `{furrr}`
+---
 class: middle, center
 
 # What are functions?
 
 ---
 
-# What are functions?
+## What are functions?
 
 .pull-left[
 
@@ -112,7 +128,7 @@ read_csv(filename)
 
 ---
 
-# Vectors in R
+## Vectors in R
 
 In R we have a number of different types of vectors:
 
@@ -136,7 +152,7 @@ column, then all the items in the second column etc.)
 
 ---
 
-# Environments
+## Environments
 
 .pull-left[
 In R, we have the global environment. This is where all variables are created when you assign (`<-`) something in the
@@ -275,7 +291,7 @@ for (i in colnames(df)) {
 
 ---
 
-# Pure functions
+## Pure functions
 
 .pull-left[
 Pure functions are functions which:
@@ -703,7 +719,6 @@ once for each item in the input vector.
 ]
 
 ---
-class: animated slideInRight fadeOutLeft
 
 # `map_df` variants
 
@@ -869,13 +884,12 @@ ae_types$data[[1]]
 ]
 
 .pull-right[
-And we could build a function that will plot this data for us
+And we could build a function that will plot this data:
 
 ```{r, echo = TRUE}
 ae_plot <- function(type, data) {
   ggplot(data, aes(period, attendances)) +
-    geom_line() +
-    geom_point() +
+    geom_line() + geom_point() +
     labs(title = paste("Type:", type))
 }
 ae_plot(ae_types$type[[1]], ae_types$data[[1]])
@@ -1130,6 +1144,62 @@ none(values, sum_gt_25)
 ]
 ]
 ]
+
+---
+
+# Parallel Computation
+
+The `{furrr}` package makes it easy to convert `map`'s to run in parallel. Almost all of the `map` functions are
+available, prefixed with `future_`.
+
+The first thing we need to do after loading the `{furrr}` package is set up the parallel workers. We do this with the
+`plan` function.
+
+.pull-left[
+```{r, echo = TRUE}
+library(furrr)
+
+plan(multisession, workers = 10)
+# multicore on Linux/Mac
+
+fn <- function(x) {
+  Sys.sleep(0.5)
+  x
+}
+```
+]
+
+.pull-right[
+```{r, echo = TRUE}
+tictoc::tic()
+x <- map_dbl(1:10, fn)
+tictoc::toc()
+
+tictoc::tic()
+y <- future_map_dbl(1:10, fn)
+tictoc::toc()
+```
+]
+
+---
+
+# Further Reading / References
+
+* [R4DS: Functions][r4ds]
+* Advanced R
+  - [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
+  - [Functions](https://adv-r.hadley.nz/functions.html)
+  - [Environments](https://adv-r.hadley.nz/environments.html)
+  - [Functional Programming][adv-r] (3 chapters)
+* Mastering the javascript interview (while not R, the examples should be easy enough to follow)
+  - [What is a pure function?][mji_what_pure_fn]
+  - [What is functional Programming?][mji_what_fp]
+* [Learn you a Haskell](http://learnyouahaskell.com/) (a purely functional programming language)
+* Category Theory (the mathematics that underpins a lot of FP)
+  - [B. Milewski Lectures](https://www.youtube.com/watch?v=I8LbkfSSR58&list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
+  - [Category Theory for Programmers](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
+  - [Category Theory Illustrated](https://boris-marinov.github.io/category-theory-illustrated/)
+* [Lambda Calculus lecture](https://www.youtube.com/watch?v=6BnVo7EHO_8) (FP is derived from lambda calculus)
 
 [//]: <> (URL's / References --------------------------------------------------)
 [email]:mailto:thomas.jemmett@nhs.net
