@@ -1,5 +1,7 @@
 # Solution 15: some/every/none
 
+library(tidyverse)
+
 values <- 1:9
 
 fn <- \(x) x > 5

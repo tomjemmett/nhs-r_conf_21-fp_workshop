@@ -1,5 +1,7 @@
 # Exercise 15: some/every/none
 
+library(tidyverse)
+
 # base R comes with the all() and any() functions which take a logical vector
 # and return a single TRUE or FALSE value, e.g.
 
