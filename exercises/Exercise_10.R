@@ -47,6 +47,7 @@ render_report <- function(org_code) {
   # filename's should be reports/org_code.docx
   filename <- YOUR_CODE_HERE
   # now, use the render function to generate the report
+  # the same file is stored at: "exercises/exercise_10.Rmd"
   YOUR_CODE_HERE
 }
 
