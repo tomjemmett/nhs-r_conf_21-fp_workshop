@@ -4,7 +4,7 @@ library(tidyverse)
 library(NHSRdatasets)
 library(rmarkdown)
 
-if (!dir.exists("reports")) dir.create("reports")
+if (!dir.exists("exercises/reports")) dir.create("exercises/reports")
 
 org_codes <- ae_attendances %>%
   group_by(org_code) %>%

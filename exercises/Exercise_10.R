@@ -44,10 +44,11 @@ org_codes
 # a list with an item called "org_code" [ list(org_code = value) ]
 
 render_report <- function(org_code) {
-  # filename's should be reports/org_code.docx
+  # filename's should be reports/org_code.docx (do not include the exercises/
+  # folder in the filename)
   filename <- YOUR_CODE_HERE
   # now, use the render function to generate the report
-  # the same file is stored at: "exercises/exercise_10.Rmd"
+  # the report file is stored at: "exercises/exercise_10.Rmd"
   YOUR_CODE_HERE
 }
 
