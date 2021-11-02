@@ -74,6 +74,42 @@ class: title-slide, left, bottom
   - `keep` and `discard`
   - `some`/`every`/`none`
 * A brief introduction to Parallel Computation with `{furrr}`
+
+---
+
+# About The Strategy Unit / Me
+
+.pull-left[
+"Leading research, analysis and change from within the NHS"
+
+The Strategy Unit is a specialist NHS team, based in Midlands and Lancashire Commissioning Support Unit. We focus on
+the application of high-quality, multi-disciplinary analytical work.
+
+Our team comes from diverse backgrounds. Our academic qualifications include maths, economics, history, natural
+sciences, medicine, sociology, business and management, psychology and political science. Our career and personal
+histories are just as varied.
+
+Our staff are NHS employees, animated by NHS values. The Strategy Unit covers all its costs through project funding.
+But this is driven by need, not what we can sell. Any surplus is recycled for public benefit.
+
+[strategyunitwm.nhs.uk](https://strategyunitwm.nhs.uk/)/[GitHub](https://github.com/The-Strategy-Unit)
+]
+
+.pull-right[
+**Tom Jemmett**
+
+*Senior Healthcare Analyst*
+
+[thomas.jemmett@nhs.net](mailto:thomas.jemmett@nhs.net)
+
+- 10+ years experience within the NHS as a data analyst
+- BSc Computer Science and Pure Mathematics (Open University)
+- MBCS/AMIMA
+- Active member of NHS-R community
+- Senior Fellow of NHS-R academy
+- @tomjemmett [Twitter](https://twitter.com/tomjemmett)/[GitHub](https://github.com/tomjemmett)
+]
+
 ---
 class: middle, center
 
@@ -288,6 +324,51 @@ for (i in colnames(df)) {
 > more dense, and the related literature can be impenetrable to newcomers.
 
 ["What is functional programming?", Mastering the JavaScript interview][mji_what_fp]
+
+---
+
+## Declarative vs Imperative
+
+.pull-left[
+Imperative programming uses statements to change a programs state. It often looks like a series of steps. You are 
+telling the computer what to do at each step.
+
+``` r
+# Correlation panel
+panel.cor <- function(x, y){
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- round(cor(x, y), digits=2)
+  txt <- paste0("R = ", r)
+  cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+# Customize upper panel
+upper.panel<-function(x, y){
+  points(x,y, pch = 19, col = my_cols[iris$Species])
+}
+# Create the plots
+pairs(iris[,1:4], 
+      lower.panel = panel.cor,
+      upper.panel = upper.panel)
+```
+
+[Source](http://www.sthda.com/english/wiki/scatter-plot-matrices-r-base-graphs)
+]
+.pull-right[
+In contrast, declarative programming focuses on what the program should do, rather than how to do it. Examples of
+declarative programming languages include Sql; you do not care how to actually perform the query, you just instruct
+the computer what things you want:
+
+``` sql
+SELECT
+  things
+FROM
+  my_table
+WHERE
+  stuff = '...';
+```
+]
 
 ---
 
